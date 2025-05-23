@@ -1,9 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, ScrollView , Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = () => {
   const currentDate = new Date().toLocaleDateString('fr-FR', {
     weekday: 'long',
     year: 'numeric',
@@ -16,30 +15,42 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.dateContainer}>
         <Text style={styles.dateText}>{currentDate}</Text>
       </View>
-      <Text style={styles.welcome}>Bienvenue dans Mon App!</Text>
-
-      <View style={styles.cardContainer}>
-        <View style={styles.card}>
-          <Icon name="cube-outline" size={24} color="#555" style={styles.Icon}/>
-          <Text style={styles.cardText}>Consulter le stock</Text>
-        </View>
-        <View style={styles.card}>
-           <Icon name="cube-outline" size={24} color="#555" style={styles.Icon}/>
-          <Text style={styles.cardText}>Card 2</Text>
-        </View>
-        <View style={styles.card}>
-           <Icon name="cube-outline" size={24} color="#555" style={styles.Icon}/>
-          <Text style={styles.cardText}>Card 2</Text>
-        </View>
-        <View style={styles.card}>
-           <Icon name="cube-outline" size={24} color="#555" style={styles.Icon}/>
-          <Text style={styles.cardText}>Card 2</Text>
-        </View>;
-        <View style={styles.card}>
-           <Icon name="cube-outline" size={24} color="#555" style={styles.Icon}/>
-          <Text style={styles.cardText}>Card 2</Text>
-        </View>
+      <View style={styles.image_container}>
+        <Image source={require('../../assets/images/photo.png')} style={styles.image} />
       </View>
+      <Text style={styles.welcome}>Bienvenue dans Mon App!</Text>
+      <ScrollView contentContainerStyle={styles.cardContainer}>
+        <View style={styles.card}>
+          <Icon name="cube-outline" size={40} style={styles.icon} />
+          <Text style={styles.cardText}>Consulter le stock</Text>
+          <Icon name="chevron-forward" size={24} color="#555" />
+        </View>
+        <View style={styles.card}>
+          <Icon name="cube-outline" size={40} style={styles.icon} />
+          <Text style={styles.cardText}>Consulter le stock</Text>
+          <Icon name="chevron-forward" size={24} color="#555" />
+        </View>
+        <View style={styles.card}>
+          <Icon name="cube-outline" size={40} style={styles.icon} />
+          <Text style={styles.cardText}>Consulter le stock</Text>
+          <Icon name="chevron-forward" size={24} color="#555" />
+        </View>
+        <View style={styles.card}>
+          <Icon name="cube-outline" size={40} style={styles.icon} />
+          <Text style={styles.cardText}>Consulter le stock</Text>
+          <Icon name="chevron-forward" size={24} color="#555" />
+        </View>
+        <View style={styles.card}>
+          <Icon name="cube-outline" size={40} style={styles.icon} />
+          <Text style={styles.cardText}>Consulter le stock</Text>
+          <Icon name="chevron-forward" size={24} color="#555" />
+        </View>
+        <View style={styles.card}>
+          <Icon name="cube-outline" size={40} style={styles.icon} />
+          <Text style={styles.cardText}>Consulter le stock</Text>
+          <Icon name="chevron-forward" size={24} color="#555" />
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -47,65 +58,74 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5fcff',
+    backgroundColor: '#e5f0f7',
     paddingTop: 50,
     paddingHorizontal: 10,
   },
   dateContainer: {
     position: 'absolute',
-    top: 5,
-    right: 5,
-    backgroundColor: '#ffffff', // fond blanc
-    paddingVertical: 6,
+    top: 10,
+    right: 10,
+    backgroundColor: 'green',
+    paddingVertical: 8,
     paddingHorizontal: 12,
-    borderRadius: 8,
+    borderRadius: 12,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 4,
-    elevation: 10, // Android
+    elevation: 5,
+  },
+  image_container: {
+    borderRadius: 30,
+  },
+  image: {
+    width: '98%',
+    height: 300,
+    borderRadius: 30,
   },
   dateText: {
-    fontSize: 14,
-    color: '#555',
+    fontSize: 16,
+    color: 'white',
+    fontStyle: 'italic',
   },
   welcome: {
     fontSize: 24,
     textAlign: 'center',
     marginVertical: 30,
     fontWeight: 'bold',
+    color: 'green',
   },
   cardContainer: {
-    marginTop: 40,
-    justifyContent: 'center',
+    paddingBottom: 20,
     alignItems: 'center',
-    width: 400,
   },
   card: {
     width: '90%',
     backgroundColor: '#ffffff',
-    paddingVertical: 40,
-    paddingHorizontal: 5,
+    paddingVertical: 20,
+    paddingHorizontal: 10,
     marginVertical: 10,
     borderRadius: 10,
     shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
-    elevation: 5, // for Android shadow
+    elevation: 5,
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
+    height: 80,
   },
   cardText: {
     fontSize: 25,
     textAlign: 'center',
-    marginLeft: 80,
+    flex: 1,
   },
-  Icon: {
-    marginLeft: 0,
-    size: 50,
-  }
-
+  icon: {
+    marginLeft: 10,
+    size: 25,
+    color: 'green',
+  },
 });
 
 export default HomeScreen;
