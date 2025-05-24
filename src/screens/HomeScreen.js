@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView , Image } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, ImageBackground , TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   const currentDate = new Date().toLocaleDateString('fr-FR', {
     weekday: 'long',
     year: 'numeric',
@@ -12,76 +12,102 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.dateContainer}>
-        <Text style={styles.dateText}>{currentDate}</Text>
+      <ImageBackground
+        source={require('../../assets/images/photo.png')}
+        style={styles.imageBackground}
+      >
+        <Text style={styles.welcome}>MarketFree</Text>
+        <View style={styles.dateContainer}>
+          <Text style={styles.dateText}>{currentDate}</Text>
+        </View>
+      </ImageBackground>
+
+      <View style={styles.bottomContainer}>
+        <Text style={styles.question}>Que voulez-vous faire ?</Text>
+        <ScrollView contentContainerStyle={styles.cardContainer}>
+          <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Famille')}>
+            <Icon name="people" size={40} style={styles.icon} />
+            <Text style={styles.cardText}>Configurer la famille</Text>
+            <Icon name="chevron-forward" size={24} color="green" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.card}  onPress={() => navigation.navigate('Consulter_stock')}>
+            <Icon name="cube-outline" size={40} style={styles.icon} />
+            <Text style={styles.cardText}>Consulter le stock</Text>
+            <Icon name="chevron-forward" size={24} color="green" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.card}>
+            <Icon name="cart-outline" size={40} style={styles.icon} />
+            <Text style={styles.cardText}>Liste des courses</Text>
+            <Icon name="chevron-forward" size={24} color="green" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.card}>
+            <Icon name="bar-chart-outline" size={40} style={styles.icon} />
+            <Text style={styles.cardText}>Consommation</Text>
+            <Icon name="chevron-forward" size={24} color="green" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.card}>
+            <Icon name="alert-circle-outline" size={40} style={styles.icon} />
+            <Text style={styles.cardText}>Produits expirés</Text>
+            <Icon name="chevron-forward" size={24} color="green" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.card}>
+            <Icon name="document-text-outline" size={40} style={styles.icon} />
+            <Text style={styles.cardText}>Historique des achats</Text>
+            <Icon name="chevron-forward" size={24} color="green" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.card}>
+            <Icon name="document-text-outline" size={40} style={styles.icon} />
+            <Text style={styles.cardText}>Historique des achats</Text>
+            <Icon name="chevron-forward" size={24} color="green" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.card}>
+            <Icon name="document-text-outline" size={40} style={styles.icon} />
+            <Text style={styles.cardText}>Historique des achats</Text>
+            <Icon name="chevron-forward" size={24} color="green" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.card}>
+            <Icon name="document-text-outline" size={40} style={styles.icon} />
+            <Text style={styles.cardText}>Historique des achats</Text>
+            <Icon name="chevron-forward" size={24} color="green" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.card}>
+            <Icon name="document-text-outline" size={40} style={styles.icon} />
+            <Text style={styles.cardText}>Historique des achats</Text>
+            <Icon name="chevron-forward" size={24} color="green" />
+          </TouchableOpacity>
+        </ScrollView>
       </View>
-      <View style={styles.image_container}>
-        <Image source={require('../../assets/images/photo.png')} style={styles.image} />
-      </View>
-      <Text style={styles.welcome}>Bienvenue dans Mon App!</Text>
-      <ScrollView contentContainerStyle={styles.cardContainer}>
-        <View style={styles.card}>
-          <Icon name="cube-outline" size={40} style={styles.icon} />
-          <Text style={styles.cardText}>Consulter le stock</Text>
-          <Icon name="chevron-forward" size={24} color="#555" />
-        </View>
-        <View style={styles.card}>
-          <Icon name="cube-outline" size={40} style={styles.icon} />
-          <Text style={styles.cardText}>Consulter le stock</Text>
-          <Icon name="chevron-forward" size={24} color="#555" />
-        </View>
-        <View style={styles.card}>
-          <Icon name="cube-outline" size={40} style={styles.icon} />
-          <Text style={styles.cardText}>Consulter le stock</Text>
-          <Icon name="chevron-forward" size={24} color="#555" />
-        </View>
-        <View style={styles.card}>
-          <Icon name="cube-outline" size={40} style={styles.icon} />
-          <Text style={styles.cardText}>Consulter le stock</Text>
-          <Icon name="chevron-forward" size={24} color="#555" />
-        </View>
-        <View style={styles.card}>
-          <Icon name="cube-outline" size={40} style={styles.icon} />
-          <Text style={styles.cardText}>Consulter le stock</Text>
-          <Icon name="chevron-forward" size={24} color="#555" />
-        </View>
-        <View style={styles.card}>
-          <Icon name="cube-outline" size={40} style={styles.icon} />
-          <Text style={styles.cardText}>Consulter le stock</Text>
-          <Icon name="chevron-forward" size={24} color="#555" />
-        </View>
-      </ScrollView>
     </View>
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e5f0f7',
-    paddingTop: 50,
-    paddingHorizontal: 10,
+    backgroundColor: 'white',
+  },
+  imageBackground: {
+    height: 250,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    //borderTopRightRadius: 20,
+    //borderTopLeftRadius: 20,
+    overflow: 'hidden',
   },
   dateContainer: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
     backgroundColor: 'green',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    width: 200,
+    height: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  image_container: {
-    borderRadius: 30,
-  },
-  image: {
-    width: '98%',
-    height: 300,
-    borderRadius: 30,
+    marginLeft: 205,
+    marginTop: 125,
   },
   dateText: {
     fontSize: 16,
@@ -89,14 +115,26 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   welcome: {
-    fontSize: 24,
+    fontSize: 28,
     textAlign: 'center',
-    marginVertical: 30,
+    marginVertical: 20,
     fontWeight: 'bold',
+    color: 'white',
+  },
+  bottomContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingTop: 10,
+  },
+  question: {
+    marginVertical: 10,
+    textAlign: 'center',
     color: 'green',
+    fontSize: 20,
+    fontWeight: '600',
   },
   cardContainer: {
-    paddingBottom: 20,
+    paddingBottom: 30,
     alignItems: 'center',
   },
   card: {
@@ -117,13 +155,13 @@ const styles = StyleSheet.create({
     height: 80,
   },
   cardText: {
-    fontSize: 25,
+    fontSize: 20,
     textAlign: 'center',
     flex: 1,
+    marginHorizontal: 10,
   },
   icon: {
     marginLeft: 10,
-    size: 25,
     color: 'green',
   },
 });
