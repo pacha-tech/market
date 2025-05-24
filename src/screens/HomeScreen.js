@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, ImageBackground , TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, ScrollView, ImageBackground , TouchableOpacity , Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import auth from '@react-native-firebase/auth';
 
 const HomeScreen = ({navigation}) => {
   const currentDate = new Date().toLocaleDateString('fr-FR', {
@@ -10,12 +11,34 @@ const HomeScreen = ({navigation}) => {
     day: 'numeric',
   });
 
+  const handleSignOut = () => {
+    Alert.alert(
+      'Déconnexion',
+      'Souhaitez-vous vraiment vous déconnecter ?',
+      [
+        { text: 'Annuler', style: 'cancel' },
+        { text: 'Oui', onPress: async () => {
+            try {
+              await auth().signOut();
+              // navigation.replace('Auth'); // Optionnel
+            } catch (error) {
+              console.log(error.message);
+            }
+          }
+        },
+      ]
+    );
+  };
+
   return (
     <View style={styles.container}>
       <ImageBackground
         source={require('../../assets/images/photo.png')}
         style={styles.imageBackground}
       >
+        <TouchableOpacity onPress={handleSignOut}>
+          <Text style={styles.deconnecter}>Se déconnecter</Text>
+        </TouchableOpacity>
         <Text style={styles.welcome}>MarketFree</Text>
         <View style={styles.dateContainer}>
           <Text style={styles.dateText}>{currentDate}</Text>
@@ -107,7 +130,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 12,
     marginLeft: 205,
-    marginTop: 125,
+    marginTop: 100,
+  },
+  deconnecter: {
+    backgroundColor: 'green',
+    width: 200,
+    height: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 12,
+    marginLeft: 205,
+    marginTop: 10,
   },
   dateText: {
     fontSize: 16,
