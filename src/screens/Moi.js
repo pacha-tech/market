@@ -1,142 +1,180 @@
-/*
-import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, Alert } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
+import { launchImageLibrary } from 'react-native-image-picker';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-
-
-const AuthScreen = () => {
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const Moi = () => {
+  const [user, setUser] = useState(null);
   const [fullName, setFullName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [message, setMessage] = useState('');
+  const [editingName, setEditingName] = useState(false);
+  const [photo, setPhoto] = useState(null);
 
-
-  const handleSignUp = async () => {
-    try {
-      const userCredential = await auth().createUserWithEmailAndPassword(email, password);
-      // Enregistre les infos supplémentaires dans Firestore
-      await firestore().collection('users').doc(userCredential.user.uid).set({
-        fullName,
-        phone,
-        email,
-        createdAt: firestore.FieldValue.serverTimestamp(),
+  useEffect(() => {
+    const currentUser = auth().currentUser;
+    setUser(currentUser);
+    if (currentUser) {
+      firestore().collection('users').doc(currentUser.uid).get().then(doc => {
+        if (doc.exists) {
+          setFullName(doc.data().fullName || '');
+        }
       });
-      setMessage('Compte créé avec succès !');
-    } catch (error) {
-      setMessage(error.message);
+      if (currentUser.photoURL) {
+        setPhoto({ uri: currentUser.photoURL });
+      }
+    }
+  }, []);
+
+  const pickImage = async () => {
+    launchImageLibrary(
+      { mediaType: 'photo', quality: 0.5 },
+      async (response) => {
+        if (response.didCancel) {return;}
+        if (response.assets && response.assets.length > 0) {
+          const uri = response.assets[0].uri;
+          try {
+            // Upload to Firebase Storage
+            const reference = storage().ref(`avatars/${user.uid}.jpg`);
+            await reference.putFile(uri);
+            const url = await reference.getDownloadURL();
+
+            // Update user profile
+            await user.updateProfile({ photoURL: url });
+
+            // Optionally, update Firestore as well
+            await firestore().collection('users').doc(user.uid).update({ photoURL: url });
+
+            // Reload user to get the new photoURL
+            await user.reload();
+            const refreshedUser = auth().currentUser;
+            setPhoto({ uri: refreshedUser.photoURL });
+
+            Alert.alert('Succès', 'Photo de profil mise à jour !');
+          } catch (e) {
+            Alert.alert('Erreur', e.message);
+          }
+        }
+      }
+    );
+  };
+
+  const handleNameSave = async () => {
+    if (user) {
+      await firestore().collection('users').doc(user.uid).update({ fullName });
+      setEditingName(false);
+      Alert.alert('Succès', 'Nom mis à jour !');
     }
   };
 
-  const handleSignIn = async () => {
-    try {
-      await auth().signInWithEmailAndPassword(email, password);
-      setMessage('Connexion réussie !');
-    } catch (error) {
-      setMessage(error.message);
-    }
+  const handleChangeEmail = () => {
+    Alert.prompt(
+      "Changer l'email",
+      "Entrez le nouvel email",
+      async (newEmail) => {
+        try {
+          await user.updateEmail(newEmail);
+          Alert.alert('Succès', 'Email mis à jour !');
+        } catch (e) {
+          Alert.alert('Erreur', e.message);
+        }
+      }
+    );
+  };
+
+  const handleChangePassword = () => {
+    Alert.prompt(
+      "Changer le mot de passe",
+      "Entrez le nouveau mot de passe",
+      async (newPassword) => {
+        try {
+          await user.updatePassword(newPassword);
+          Alert.alert('Succès', 'Mot de passe mis à jour !');
+        } catch (e) {
+          Alert.alert('Erreur', e.message);
+        }
+      }
+    );
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Authentification</Text>
-      {isSignUp && (
-        <>
-          <TextInput
-            style={styles.input}
-            placeholder="Nom complet"
-            value={fullName}
-            onChangeText={setFullName}
+      {/* Photo de profil */}
+      <View style={styles.listItem}>
+        <View style={styles.avatarRow}>
+          <Image
+            source={photo ? photo : require('../../assets/images/photo.png')}
+            style={styles.avatar}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Téléphone"
-            value={phone}
-            onChangeText={setPhone}
-            keyboardType="phone-pad"
-          />
-        </>
-      )}
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Mot de passe"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      {isSignUp ? (
-        <>
-          <TouchableOpacity onPress={handleSignUp} style={styles.boutton1}>
-            <Text>Créer un compte</Text>
+          <TouchableOpacity onPress={pickImage} style={styles.iconEditPhoto}>
+            <Icon name="pencil" size={24} color="green" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setIsSignUp(false)}>
-            <Text style={styles.linkBlue}>Déjà inscrit ? Se connecter</Text>
+        </View>
+        <Text style={styles.label}>Photo de profil</Text>
+      </View>
+
+      {/* Nom d'utilisateur */}
+      <View style={styles.listItem}>
+        <View style={styles.row}>
+          <Text style={styles.label}>Nom d'utilisateur</Text>
+          {editingName ? (
+            <>
+              <TextInput
+                style={styles.input}
+                value={fullName}
+                onChangeText={setFullName}
+              />
+              <TouchableOpacity onPress={handleNameSave}>
+                <Icon name="checkmark" size={24} color="green" />
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <Text style={styles.value}>{fullName}</Text>
+              <TouchableOpacity onPress={() => setEditingName(true)}>
+                <Icon name="pencil" size={24} color="green" />
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      </View>
+
+      {/* Email */}
+      <View style={styles.listItem}>
+        <View style={styles.row}>
+          <Text style={styles.label}>Email</Text>
+          <Text style={styles.value}>{user ? user.email : ''}</Text>
+          <TouchableOpacity onPress={handleChangeEmail}>
+            <Icon name="pencil" size={24} color="green" />
           </TouchableOpacity>
-        </>
-      ) : (
-        <>
-          <TouchableOpacity onPress={handleSignIn} style={styles.boutton2}>
-            <Text>Se connecter</Text>
+        </View>
+      </View>
+
+      {/* Mot de passe */}
+      <View style={styles.listItem}>
+        <View style={styles.row}>
+          <Text style={styles.label}>Mot de passe</Text>
+          <Text style={styles.value}>********</Text>
+          <TouchableOpacity onPress={handleChangePassword}>
+            <Icon name="pencil" size={24} color="green" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setIsSignUp(true)}>
-            <Text style={styles.linkGray}>Créer un compte</Text>
-          </TouchableOpacity>
-        </>
-      )}
-      <Text style={styles.message}>{message}</Text>
+        </View>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20, backgroundColor: 'white' },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, color: 'green', textAlign: 'center' },
-  input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 10, marginBottom: 10 },
-  message: { marginTop: 10, textAlign: 'center', color: 'red' },
-  boutton1: { 
-    backgroundColor: 'green',
-    width: 200,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 70,
-    borderRadius: 30,
-    marginVertical: 15,
-  },
-  boutton2: {
-    backgroundColor: 'green',
-    width: 200,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 70,
-    borderRadius: 30,
-    marginVertical: 15,
-  },
-  linkBlue: { 
-    color: 'black',
-    textAlign: 'center', 
-    fontSize: 16, 
-    marginVertical: 8,
-  },
-  linkGray: { 
-    color: 'black', 
-    textAlign: 'center', 
-    fontSize: 16, 
-    marginVertical: 8,
-  },
-  //boutton: {color: 'green'},
+  container: { flex: 1, padding: 20, backgroundColor: 'white' },
+  listItem: { marginBottom: 25 },
+  avatarRow: { alignItems: 'center', justifyContent: 'center' },
+  avatar: { width: 120, height: 120, borderRadius: 60, backgroundColor: '#eee' },
+  iconEditPhoto: { position: 'absolute', bottom: 10, right: 10, backgroundColor: 'white', borderRadius: 12, padding: 2 },
+  label: { fontWeight: 'bold', fontSize: 16, marginRight: 10 },
+  value: { fontSize: 18, marginRight: 10 },
+  input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 10, minWidth: 120, marginRight: 10 },
+  row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
 });
 
-export default AuthScreen;
-*/
+export default Moi;

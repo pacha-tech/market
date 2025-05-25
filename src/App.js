@@ -6,7 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Store, persistor } from './Store';
 import auth from '@react-native-firebase/auth';
 import Navigation from './navigations/Navigation';
-import AuthScreen from './services/Auth'; // Ton écran d'authentification
+import AuthScreen from './services/Auth';
 
 const App = () => {
   const [initializing, setInitializing] = useState(true);

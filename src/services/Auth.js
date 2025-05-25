@@ -3,8 +3,6 @@ import { View, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-nativ
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
-
-
 const AuthScreen = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
@@ -13,17 +11,16 @@ const AuthScreen = () => {
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
 
-
   const handleSignUp = async () => {
     try {
       const userCredential = await auth().createUserWithEmailAndPassword(email, password);
       // Enregistre les infos supplémentaires dans Firestore
-      //await firestore().collection('users').doc(userCredential.user.uid).set({
-      //  fullName,
-      //  phone,
-      //  email,
-      //  createdAt: firestore.FieldValue.serverTimestamp(),
-      //});
+      await firestore().collection('users').doc(userCredential.user.uid).set({
+        fullName,
+        phone,
+        email,
+        createdAt: firestore.FieldValue.serverTimestamp(),
+      });
       setMessage('Compte créé avec succès !');
     } catch (error) {
       setMessage(error.message);
@@ -102,7 +99,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, color: 'green', textAlign: 'center' },
   input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 10, marginBottom: 10 },
   message: { marginTop: 10, textAlign: 'center', color: 'red' },
-  boutton1: { 
+  boutton1: {
     backgroundColor: 'green',
     width: 200,
     height: 40,
@@ -122,19 +119,18 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginVertical: 15,
   },
-  linkBlue: { 
-    color: 'black',
-    textAlign: 'center', 
-    fontSize: 16, 
+  linkBlue: {
+    color: 'blue',
+    textAlign: 'center',
+    fontSize: 16,
     marginVertical: 8,
   },
-  linkGray: { 
-    color: 'black', 
-    textAlign: 'center', 
-    fontSize: 16, 
+  linkGray: {
+    color: 'gray',
+    textAlign: 'center',
+    fontSize: 16,
     marginVertical: 8,
   },
-  //boutton: {color: 'green'},
 });
 
 export default AuthScreen;

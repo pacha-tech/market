@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
 
-const Liste_course = () => {
+const Faire_course = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // On suppose que tu as une collection "courses" dans Firestore
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('courses')
-      .where('achete', '==', false) // Affiche seulement les produits à acheter
       .onSnapshot(snapshot => {
         const data = snapshot.docs.map(doc => ({
           id: doc.id,
@@ -22,6 +22,10 @@ const Liste_course = () => {
     return unsubscribe;
   }, []);
 
+  const toggleAchete = async (id, actuel) => {
+    await firestore().collection('courses').doc(id).update({ achete: !actuel });
+  };
+
   if (loading) {
     return (
       <View style={styles.container}>
@@ -32,14 +36,22 @@ const Liste_course = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Produits à acheter</Text>
+      <Text style={styles.title}>Faire les courses</Text>
       <FlatList
         data={courses}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <View style={styles.itemRow}>
-            <Icon name="ellipse-outline" size={24} color="#aaa" style={{ marginRight: 10 }} />
-            <Text style={styles.itemText}>{item.nom}</Text>
+            <TouchableOpacity onPress={() => toggleAchete(item.id, item.achete)}>
+              <Icon
+                name={item.achete ? 'checkbox-outline' : 'square-outline'}
+                size={28}
+                color={item.achete ? 'green' : '#aaa'}
+              />
+            </TouchableOpacity>
+            <Text style={[styles.itemText, item.achete && styles.achete]}>
+              {item.nom}
+            </Text>
             <Text style={styles.qte}>{item.quantite ? `x${item.quantite}` : ''}</Text>
           </View>
         )}
@@ -61,8 +73,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     elevation: 1,
   },
-  itemText: { fontSize: 17, flex: 1 },
+  itemText: { fontSize: 17, flex: 1, marginLeft: 12 },
+  achete: { textDecorationLine: 'line-through', color: '#aaa' },
   qte: { fontWeight: 'bold', color: '#333', marginLeft: 10 },
 });
 
-export default Liste_course;
+export default Faire_course;

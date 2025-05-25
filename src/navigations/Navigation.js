@@ -10,6 +10,7 @@ import Consulter_stock from '../screens/Consulter_stock';
 import Liste_course from '../screens/Liste_course';
 import Consommation from '../screens/Consommation';
 import Produits_expirer from '../screens/Produits_expirer';
+import Faire_course from '../screens/Faire_course';
 import Choix from '../screens/Choix';
 import Moi from '../screens/Moi';
 import Historique from '../screens/Historique';
@@ -27,6 +28,7 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Famille" component={Famille} />
       <HomeStack.Screen name="Consulter_stock" component={Consulter_stock} />
       <HomeStack.Screen name="Liste_course" component={Liste_course} />
+      <HomeStack.Screen name="Faire_course" component={Faire_course} />
       <HomeStack.Screen name="Consommation" component={Consommation} />
       <HomeStack.Screen name="Produits_expirer" component={Produits_expirer} />
       <HomeStack.Screen name="Historique" component={Historique} />

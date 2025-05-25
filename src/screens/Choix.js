@@ -6,10 +6,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
 const plats = [
-  { id: 1, nom: 'Riz au poisson', image: require('../../assets/images/photo.png') },
-  { id: 2, nom: 'Spaghetti Bolognaise', image: require('../../assets/images/photo.png') },
-  { id: 3, nom: 'Poulet Curry', image: require('../../assets/images/photo.png') },
-  { id: 4, nom: 'Tarte aux pommes', image: require('../../assets/images/photo.png') },
+  { id: 1, nom: 'Bouillon de boeuf', image: require('../../assets/images/bouillon.jpeg') },
+  { id: 2, nom: 'Eru', image: require('../../assets/images/eru.jpeg') },
+  { id: 3, nom: 'Koki', image: require('../../assets/images/koki.jpeg') },
+  { id: 4, nom: 'Nkontchap', image: require('../../assets/images/nkontchap.jpeg') },
   { id: 5, nom: 'Pizza Margherita', image: require('../../assets/images/photo.png') },
   { id: 6, nom: 'Lasagnes', image: require('../../assets/images/photo.png') },
   { id: 7, nom: 'Soupe de légumes', image: require('../../assets/images/photo.png') },
